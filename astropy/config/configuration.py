@@ -758,7 +758,7 @@ def is_unedited_config_file(filename):
     buffer = io.BytesIO(content)
     buffer.seek(0)
     
-    know_configs_preserve = set ([
+    known_configs_preserve = set ([
     	'fdf8a709588d9083d3ec0cbb3a0ac462', # default in 0.4
         ])
     # Now determine if it matches the md5sum of a known, unedited
