@@ -757,16 +757,14 @@ def is_unedited_config_file(filename):
     # First determine if the config file has any effective content
     buffer = io.BytesIO(content)
     buffer.seek(0)
-    raw_cfg = configobj.ConfigObj(buffer, interpolation=True)
-    for v in six.itervalues(raw_cfg):
-        if len(v):
-            break
-    else:
-        return True
-
+    
+    know_configs_preserve = set ([
+    	'fdf8a709588d9083d3ec0cbb3a0ac462', # default in 0.4
+        ])
     # Now determine if it matches the md5sum of a known, unedited
     # config file.
     known_configs = set([
+    	'fdf8a709588d9083d3ec0cbb3a0ac462',
         '7d4b4f1120304b286d71f205975b1286',  # v0.3.2
         '5df7e409425e5bfe7ed041513fda3288',  # v0.3
         '8355f99a01b3bdfd8761ef45d5d8b7e5',  # v0.2
@@ -776,6 +774,16 @@ def is_unedited_config_file(filename):
     md5 = hashlib.md5()
     md5.update(content)
     digest = md5.hexdigest()
+    
+    if digest in known_configs_preserve:
+        return False
+    raw_cfg = configobj.ConfigObj(buffer, interpolation=True)
+    for v in six.itervalues(raw_cfg):
+        if len(v):
+            break
+    else:
+        return True
+
     return digest in known_configs
 
 
